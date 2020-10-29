@@ -1,0 +1,147 @@
+import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
+import 'dart:io';
+import 'package:path/path.dart';
+import 'package:excel/excel.dart';
+
+void main() {
+  runApp(MyApp());
+}
+
+class MyApp extends StatelessWidget {
+  // This widget is the root of your application.
+  @override
+  Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.landscapeLeft,
+      DeviceOrientation.landscapeRight,
+    ]);
+    excelbruh();
+    return MaterialApp(
+      title: 'Flutter Demo',
+      debugShowCheckedModeBanner: false,
+      theme: ThemeData(
+        primarySwatch: Colors.blue,
+        visualDensity: VisualDensity.adaptivePlatformDensity,
+      ),
+      home: MyHomePage(title: ''),
+    );
+  }
+}
+
+class MyHomePage extends StatefulWidget {
+  MyHomePage({Key key, this.title}) : super(key: key);
+
+  final String title;
+
+  @override
+  _MyHomePageState createState() => _MyHomePageState();
+}
+
+class _MyHomePageState extends State<MyHomePage> {
+  int _counter = 0;
+
+  void _incrementCounter() {
+    setState(() {
+      _counter++;
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Container(
+        decoration: BoxDecoration(
+            image: DecorationImage(
+                image: AssetImage("image/bg.png"), fit: BoxFit.cover
+            )
+        ),
+        child: Scaffold(
+          backgroundColor: Colors.transparent,
+          body: Center(
+            child: Wrap(
+              children: <Widget>[
+                FlatButton(
+                    onPressed: (){
+                      debugPrint("Puas");
+                    },
+                    padding: EdgeInsets.all(0.0),
+                    child: Image.asset(
+                        'image/puas.png',
+                        height: 300,
+                        fit: BoxFit.fitWidth
+                    )
+                ),
+                FlatButton(
+                    onPressed: (){
+                      debugPrint("Cukup");
+                    },
+                    padding: EdgeInsets.all(0.0),
+                    child: Image.asset(
+                        "image/cukup.png",
+                        height: 300,
+                        fit: BoxFit.fitWidth
+                    )
+                ),
+                FlatButton(
+                    onPressed: (){
+                      debugPrint("Kurang");
+                    },
+                    padding: EdgeInsets.all(0.0),
+                    child: Image.asset(
+                      "image/kurang.png",
+                        height: 300,
+                        fit: BoxFit.fitWidth
+                    )
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+void excelbruh() async {
+  debugPrint("Bruh");
+  var excel = Excel.createExcel();
+  Sheet sheetObject = excel['SheetName'];
+
+  CellStyle cellStyle = CellStyle(backgroundColorHex: "#1AFF1A", fontFamily : getFontFamily(FontFamily.Calibri));
+
+  cellStyle.underline = Underline.Single; // or Underline.Double
+
+
+  var cell = sheetObject.cell(CellIndex.indexByString("A1"));
+  cell.value = 8;
+  cell.cellStyle = cellStyle;
+
+  print("CellType: "+ cell.cellType.toString());
+
+  ///
+  /// Inserting and removing column and rows
+
+  // insert column at index = 8
+  sheetObject.insertColumn(8);
+
+  // remove column at index = 18
+  sheetObject.removeColumn(18);
+
+  // insert row at index = 82
+  sheetObject.removeRow(82);
+
+  // remove row at index = 80
+  sheetObject.removeRow(80);
+
+  excel.encode().then((onValue) {
+    File(join("excel.xlsx"))
+      ..createSync(recursive: true)
+      ..writeAsBytesSync(onValue);
+  });
+}
+
+// class hitung {
+//   var now = new DateTime.now();
+//   if
+// }
